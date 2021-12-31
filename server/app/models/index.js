@@ -1,4 +1,4 @@
 const db = {};
 
-db.User = require("./user.model");
+db.user = require("./user.model");
 module.exports = db;
