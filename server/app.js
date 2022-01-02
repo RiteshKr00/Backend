@@ -32,9 +32,7 @@ mongoose.connection.on("error", () => {
 app.use(express.json()); //repalcement of bodyparser
 
 require("./app/routes/auth.routes")(app);
-
-
-
+require("./app/routes/user.routes")(app);
 
 app.listen(process.env.PORT || 8000, () => {
   console.log("Server is runnng at port", process.env.PORT);

@@ -6,7 +6,6 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
     const user = await User.findOne({
       username: req.body.username,
     });
-    console.log(user.verified);
     if (user) {
       res.status(400).json({ message: "Failed! Username is already in use!" });
       return;
@@ -15,7 +14,9 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
     const email = await User.findOne({
       email: req.body.email,
     });
-    if (email) {
+    console.log(email);
+    //register New User with same email if Not Verified
+    if (email && email.verified == true) {
       res.status(400).send({ message: "Failed! Email is already in use!" });
       return;
     }
