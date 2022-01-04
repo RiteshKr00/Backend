@@ -1,5 +1,6 @@
 const authcontroller = require("../controllers/auth.controller");
 const { verifySignUp } = require("../middleware"); //no need to go one folder next due to index file
+
 /// NEW - Add CORS headers - see https://enable-cors.org/server_expressjs.html
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -20,4 +21,7 @@ module.exports = function (app) {
   );
 
   app.post("/signin", authcontroller.signin);
+  app.post("/forgot_password", authcontroller.sendResetpassword);
+  app.post("/setnewpassword", authcontroller.newPassword);
+  app.get("/email_verify", authcontroller.verifyEmail);
 };

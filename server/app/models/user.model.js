@@ -19,6 +19,8 @@ const User = mongoose.model(
       type: Boolean,
       default: false,
     },
+    resetToken: String,
+    expireToken: Date,
   })
 );
 
