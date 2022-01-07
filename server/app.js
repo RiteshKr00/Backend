@@ -5,6 +5,10 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+//swaggerUI
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
 //Instead of manually specifying the headers, there is a CORS Express middleware package that can be used instead.
 var corsOptions = {
   origin: "*", // restrict calls to those this address
@@ -30,6 +34,8 @@ mongoose.connection.on("error", () => {
 // require("./app/models/user");
 
 app.use(express.json()); //repalcement of bodyparser
+//swagger UI endpoint
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);

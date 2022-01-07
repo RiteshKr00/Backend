@@ -1,0 +1,255 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Social App Backend",
+        "description": "Api Ui for Social App",
+        "termsOfService": "http://socialapp/terms/",
+        "contact": {
+            "email": "abc@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://spdx.org/licenses/MIT.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/"
+        },
+        {
+            "url": "https://localhost:8080/"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "User authentication"
+        },
+        {
+            "name": "Users",
+            "description": "Operations about user"
+        },
+        {
+            "name": "userImages",
+            "description": "Operations about user"
+        }
+    ],
+    "paths": {
+        "/signin": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login here",
+                "description": "Login for existing users",
+                "parameters": [],
+                "requestBody": {
+                    "description": "Login Info",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "Ritesh"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "12345"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Signed in Successfully",
+                        "schema": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register here",
+                "description": "Create new user in system",
+                "parameters": [],
+                "requestBody": {
+                    "description": "user Info",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "lucifer"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "abc@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Azw@47"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Signed in Successfully",
+                        "schema": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/{Id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get the user with Given Ids",
+                "description": "Enter the user id",
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "ID of user that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "hexadecimal"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },"400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "username",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "isVerfified": {
+                        "type": "boolean",
+                        "default": "false"
+                    },
+                    "resetToken": {
+                        "type": "string"
+                    },
+                    "expireToken": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "xml": {
+                    "name": "User"
+                }
+            },
+            "ApiResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
