@@ -142,6 +142,66 @@
                 }
             }
         },
+        "/usersearch": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Search the user with Given keyWords",
+                "description": "KeyWord or username to be searched is matched with name and email of the user",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "KeyWord or username to be searched",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "query": {
+                                        "type": "string",
+                                        "example": "lucifer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/user/{Id}": {
             "get": {
                 "tags": [
@@ -179,7 +239,8 @@
                                 }
                             }
                         }
-                    },"400": {
+                    },
+                    "400": {
                         "description": "Invalid ID / Bad Request"
                     },
                     "422": {
@@ -233,6 +294,35 @@
                 },
                 "xml": {
                     "name": "User"
+                }
+            },
+            "FriendRequests": {
+                "type": "object",
+                "required": [
+                    "senderId",
+                    "receiverId"
+                ],
+                "properties": {
+                    "senderId": {
+                        "type": "string"
+                    },
+                    "receiverId": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "default": "1",
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4"
+                        ],
+                        "description": "Status states:\n  1 : `pending`\n  2 : `Accepted`\n  3 : `Rejected`\n  4 : `blocked`\n"
+                    }
+                },
+                "xml": {
+                    "name": "FriendRequests"
                 }
             },
             "ApiResponse": {

@@ -39,6 +39,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/friend.routes")(app);
 
 app.listen(process.env.PORT || 8000, () => {
   console.log("Server is runnng at port", process.env.PORT);
