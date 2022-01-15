@@ -21,5 +21,5 @@ Sender_email="kumar@gmail.com"
 ## API documentation
 
 ```
- http://localhost:8080/api-docs/
+ base_URL/api-docs/
 ```
