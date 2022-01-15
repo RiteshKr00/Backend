@@ -36,7 +36,7 @@
         }
     ],
     "paths": {
-        "/signin": {
+        "/auth/signin": {
             "post": {
                 "tags": [
                     "Authentication"
@@ -87,7 +87,7 @@
                 }
             }
         },
-        "/signup": {
+        "/auth/signup": {
             "post": {
                 "tags": [
                     "Authentication"
@@ -142,7 +142,7 @@
                 }
             }
         },
-        "/usersearch": {
+        "/user/search": {
             "get": {
                 "tags": [
                     "Users"

@@ -15,13 +15,13 @@ module.exports = function (app) {
     res.send({ message: "connected" });
   });
   app.post(
-    "/signup",
+    "/auth/signup",
     [verifySignUp.checkDuplicateUsernameOrEmail],
     authcontroller.signup
   );
 
-  app.post("/signin", authcontroller.signin);
-  app.post("/forgot_password", authcontroller.sendResetpassword);
-  app.post("/setnewpassword", authcontroller.newPassword);
-  app.get("/email_verify", authcontroller.verifyEmail);
+  app.post("/auth/signin", authcontroller.signin);
+  app.post("/auth/forgot_password", authcontroller.sendResetpassword);
+  app.post("/auth/setnewpassword", authcontroller.newPassword);
+  app.get("/auth/verifyemail", authcontroller.verifyEmail);
 };

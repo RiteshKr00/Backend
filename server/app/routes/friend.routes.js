@@ -10,5 +10,24 @@ module.exports = function (app) {
     next();
   });
   //use middleware in array *
-  app.post("/friend/create", [authJwt.verifyToken], friendcontroller.createFriend);
+  app.post(
+    "/user/friend/create",
+    [authJwt.verifyToken],
+    friendcontroller.createFriend
+  );
+  app.put(
+    "/user/friend/update",
+    [authJwt.verifyToken],
+    friendcontroller.updateRequestStatus
+  );
+  app.get(
+    "/user/friend/list/:status",
+    [authJwt.verifyToken],
+    friendcontroller.getFriendRequestList
+  );
+  app.delete(
+    "/user/friend/remove",
+    [authJwt.verifyToken],
+    friendcontroller.removeFriend
+  );
 };

@@ -11,5 +11,5 @@ module.exports = function (app) {
   });
   //use middleware in array *
   app.get("/user/:id", [authJwt.verifyToken], usercontroller.getUser);
-  app.get("/usersearch", [authJwt.verifyToken], usercontroller.searchUser);
+  app.get("/user/search", [authJwt.verifyToken], usercontroller.searchUser);
 };
