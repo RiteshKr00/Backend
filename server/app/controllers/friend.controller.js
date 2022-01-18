@@ -29,10 +29,16 @@ exports.updateRequestStatus = async (req, res) => {
       { new: true }
     );
     console.log(request);
-    res.status(200).send({
-      message: "Friend Request Status Updated Succesfully",
-      response: request,
-    });
+    if (request) {
+      res.status(200).send({
+        message: "Friend Request Status Updated Succesfully",
+        response: request,
+      });
+    } else {
+      res.status(404).send({
+        message: "No such Friend Exist",
+      });
+    }
   } catch (err) {
     res.status(500).send({ message: `Something Went Wrong ${err} ` });
   }

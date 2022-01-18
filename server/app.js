@@ -15,6 +15,9 @@ var corsOptions = {
 };
 // NEW - replace custom middleware with the cors() middleware
 app.use(cors(corsOptions));
+//image upload
+app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static('uploads'));
 
 mongoose.connect(process.env.MONGOURI, {
   useNewUrlParser: true,
