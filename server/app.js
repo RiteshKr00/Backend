@@ -16,8 +16,8 @@ var corsOptions = {
 // NEW - replace custom middleware with the cors() middleware
 app.use(cors(corsOptions));
 //image upload
-app.use(express.static(__dirname + '/public'));
-app.use('/uploads', express.static('uploads'));
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
 
 mongoose.connect(process.env.MONGOURI, {
   useNewUrlParser: true,
@@ -43,6 +43,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/friend.routes")(app);
+require("./app/routes/userImage.routes")(app);
 
 app.listen(process.env.PORT || 8000, () => {
   console.log("Server is runnng at port", process.env.PORT);

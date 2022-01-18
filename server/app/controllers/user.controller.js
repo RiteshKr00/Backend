@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const db = require("../models");
 const User = db.user;
 

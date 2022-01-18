@@ -4,6 +4,7 @@ const UserImages = mongoose.model(
   "UserImages",
   new mongoose.Schema({
     publicId: {
+      //Every asset uploaded to Cloudinary is assigned a unique identifier in the form of a Public ID
       type: String,
       required: true,
     },
