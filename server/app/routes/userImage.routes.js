@@ -12,11 +12,7 @@ module.exports = function (app) {
     next();
   });
   //use middleware in array *
-  app.post(
-    "/user/image/upload",
-    [authJwt.verifyToken, upload.array("image", 1)], //can be used send Multiple files
-    userImagecontroller.uploadImage
-  );
+  app.post("/user/image/upload", userImagecontroller.uploadImage);
   //   app.post(
   //     "/user/image/upload",
   //     [authJwt.verifyToken, upload.array("image")],
