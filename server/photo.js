@@ -17,7 +17,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json()); //repalcement of bodyparser
 
-require("./app/routes/auth.routes")(app);
+require("./app/routes/userImage.routes")(app);
 
 app.listen(process.env.PORT2 || 8000, () => {
   console.log("Server is runnng at port", process.env.PORT2);

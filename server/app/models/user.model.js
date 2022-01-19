@@ -15,10 +15,20 @@ const User = mongoose.model(
       type: String,
       required: true,
     },
+    city: {
+      type: String,
+    },
     verified: {
       type: Boolean,
       default: false,
     },
+    pic: {
+      type: String,
+    },
+    // pic: { //IF we want to link to Schema
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "UserImage",
+    // }
     resetToken: String,
     expireToken: Date,
   })

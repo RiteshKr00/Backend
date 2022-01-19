@@ -30,4 +30,9 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     friendcontroller.removeFriend
   );
+  app.get(
+    "/user/friend/recommendation",
+    [authJwt.verifyToken],
+    friendcontroller.recommendFriend
+  );
 };

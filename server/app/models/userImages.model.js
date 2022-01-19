@@ -15,7 +15,7 @@ const UserImages = mongoose.model(
     imgType: {
       type: String,
       required: true,
-      enum: ["profile", "gallery"],
+      enum: ["profile", "post", "gallery"],
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

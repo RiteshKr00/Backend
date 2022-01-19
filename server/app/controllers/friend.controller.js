@@ -1,10 +1,12 @@
 const db = require("../models");
 const Friend = db.friend;
+const User = db.user;
 
 exports.createFriend = async (req, res) => {
   try {
     console.log(req.userId);
     const { receiver } = req.body;
+    //before creating first check if such pair exist in either order
     const friend = new Friend({
       senderId: req.userId,
       receiverId: receiver,
@@ -28,6 +30,15 @@ exports.updateRequestStatus = async (req, res) => {
       },
       { new: true }
     );
+    //if status 2 add userID in friend list array
+    if (status === 2) {
+      await User.findByIdAndUpdate(req.userId, {
+        $push: { friends: receiver },
+      });
+      await User.findByIdAndUpdate(receiver, {
+        $push: { friends: req.userId },
+      });
+    }
     console.log(request);
     if (request) {
       res.status(200).send({
@@ -50,7 +61,7 @@ exports.getFriendRequestList = async (req, res) => {
     //here status can be 1: "pending" 2: "accepted" 3: "rejected" 4: "blocked"
 
     const list = await Friend.find({
-      senderId: req.userId,
+      senderId: req.userId, //with or receiverId: req.userId
       status: status,
     });
     console.log(list);
@@ -70,7 +81,7 @@ exports.removeFriend = async (req, res) => {
 
     const friend_deleted = await Friend.findOneAndRemove({
       senderId: req.userId,
-      receiverId: receiver,
+      receiverId: receiver, //also check reverse
     });
     if (friend_deleted)
       res.status(200).send({
@@ -82,6 +93,37 @@ exports.removeFriend = async (req, res) => {
         message: "No such Friend Exist",
       });
     }
+  } catch (err) {
+    res.status(500).send({ message: `Something Went Wrong ${err} ` });
+  }
+};
+
+exports.recommendFriend = async (req, res) => {
+  try {
+    console.log(req.userId);
+    const { city } = req.body;
+    //on basis of city
+    const friendSuggestion = await User.find({ city: city });
+    console.log(friendSuggestion);
+    const x = [];
+    friendSuggestion.map((friendId) => {
+      x.push(friendId._id);
+    });
+    console.log(x);
+    //Mutual friend
+    const userFriendList = [];//
+    const friendSuggestion2 = await Friend.find({
+      $or: [{ senderId: req.userId }, { receiverId: req.userId }],
+      status: 1,
+    });
+    friendSuggestion2.map((friendId) => {
+      userFriendList.push(friendId._id);
+    });
+    console.log(userFriendList);
+
+    res
+      .status(200)
+      .send({ message1: "Ids of Friends with common city", id: x });
   } catch (err) {
     res.status(500).send({ message: `Something Went Wrong ${err} ` });
   }

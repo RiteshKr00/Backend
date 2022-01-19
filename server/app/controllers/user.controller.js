@@ -30,3 +30,14 @@ exports.searchUser = async (req, res) => {
     res.status(404).send(err);
   }
 };
+
+exports.uploadProfilePic = async (req, res) => {
+  try {
+    
+
+    return res.status(200).json({ user });
+  } catch (err) {
+    console.log("err");
+    res.status(404).send(err);
+  }
+};
