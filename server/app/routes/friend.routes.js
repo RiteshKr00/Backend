@@ -20,6 +20,21 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     friendcontroller.updateRequestStatus
   );
+  app.put(
+    "/user/friend/accept",
+    [authJwt.verifyToken],
+    friendcontroller.acceptRequest
+  );
+  app.delete(
+    "/user/friend/reject",
+    [authJwt.verifyToken],
+    friendcontroller.rejectRequest
+  );
+  app.post(
+    "/user/friend/block",
+    [authJwt.verifyToken],
+    friendcontroller.blockUnblockRequest
+  );
   app.get(
     "/user/friend/list/:status",
     [authJwt.verifyToken],

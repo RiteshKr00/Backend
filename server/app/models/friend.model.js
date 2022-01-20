@@ -14,13 +14,13 @@ const Friend = mongoose.model(
     status: {
       // Status states
       // =============
-      // 1: "pending"
-      // 2: "accepted"
-      // 3: "rejected"
-      // 4: "blocked"
+      // 1: "Requested"
+      // 2: "Pending"
+      // 3: "Blocked"
+      // 4: "Accepted" or "friend"
 
       type: Number,
-      default: 1,
+      enums: [1, 2, 3, 4],
     },
   })
 );
