@@ -297,27 +297,57 @@ exports.recommendFriend = async (req, res) => {
     console.log(req.userId);
     const { city } = req.body;
     //on basis of city
-    const friendSuggestion = await User.find({ city: city });
-    console.log(friendSuggestion);
-    const x = [];
-    friendSuggestion.map((friendId) => {
-      x.push(friendId._id);
-    });
-    console.log(x);
-    //Mutual friend
-    const userFriendList = []; //
-    const friendSuggestion2 = await Friend.find({
-      $or: [{ senderId: req.userId }, { receiverId: req.userId }],
-      status: 1,
-    });
-    friendSuggestion2.map((friendId) => {
-      userFriendList.push(friendId._id);
-    });
-    console.log(userFriendList);
+    
+    // const friendSuggestion = await User.find({
+    //   $and: [{ city: city }, { _id: { $nin: req.userId } }],
+    // });
+    // // console.log(friendSuggestion);
+    // // const x = [];
+    // // friendSuggestion.map((friendId) => {
+    // //   x.push(friendId._id);
+    // // });
+    // // console.log(x);
 
+    //Mutual Friend
+    let x = [];
+    let recommended = [];
+    const friend = await Friend.find({
+      $and: [{ senderId: req.userId }, { status: 4 }],
+    });
+    // console.log(friend);
+    const myfriend = friend.map((friend) => {
+      // console.log(friend.receiverId);
+      return friend.receiverId;
+    });
+    // console.log(myfriend);
+    //Iterate my friend's friend and store it in a set
+    myfriend.forEach(async (user) => {
+      // console.log(user);
+      const otherUserFriend = await Friend.find({
+        $and: [
+          { senderId: user },
+          { status: 4 },
+          {
+            $and: [
+              { receiverId: { $nin: req.userId } },
+              { receiverId: { $nin: myfriend } },
+            ],
+          },
+        ],
+      });
+      const otherUserFriendId = otherUserFriend.map((friend) => {
+        // console.log(friend.receiverId);
+        return friend.receiverId;
+      });
+      // console.log(otherUserFriendId);
+      recommended = [...new Set([...recommended, ...otherUserFriendId])];
+      console.log(recommended);
+    });
+    console.log(recommended);
+    //pass value of variable in aync statement
     res
       .status(200)
-      .send({ message1: "Ids of Friends with common city", id: x });
+      .send({ message1: "Ids of Mutual Friends  ", response: recommended });
   } catch (err) {
     res.status(500).send({ message: `Something Went Wrong ${err} ` });
   }

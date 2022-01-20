@@ -25,25 +25,6 @@ const User = mongoose.model(
     pic: {
       type: String,
     },
-    // friends: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //   },
-    // ],
-    // blocked: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //   },
-    // ],
-    // requests: [
-    //   //helps to check if user is requested or not
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Friend",
-    //   },
-    // ],
     // pic: { //IF we want to link to Schema
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "UserImage",

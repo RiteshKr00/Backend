@@ -40,11 +40,11 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     friendcontroller.getFriendRequestList
   );
-  app.delete(
-    "/user/friend/remove",
-    [authJwt.verifyToken],
-    friendcontroller.removeFriend
-  );
+  // app.delete(
+  //   "/user/friend/remove",
+  //   [authJwt.verifyToken],
+  //   friendcontroller.removeFriend
+  // );
   app.get(
     "/user/friend/recommendation",
     [authJwt.verifyToken],
