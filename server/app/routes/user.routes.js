@@ -11,11 +11,11 @@ module.exports = function (app) {
     next();
   });
   //use middleware in array *
-  app.get("/user/:id", [authJwt.verifyToken], usercontroller.getUser);
-  app.get("/usersearch", [authJwt.verifyToken], usercontroller.searchUser);
+  app.get("/user/search", [authJwt.verifyToken], usercontroller.searchUser);
   app.post(
-    "/profileimg",
+    "/user/profileimg",
     [authJwt.verifyToken, upload.array("image", 1)], //can be used send Multiple files
     usercontroller.uploadProfilePic
   );
+  app.get("/user/:id", [authJwt.verifyToken], usercontroller.getUser);
 };

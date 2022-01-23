@@ -23,7 +23,7 @@ module.exports = function (app) {
   );
 
   app.post("/auth/signin", authcontroller.signin);
-  app.post("/auth/forgot_password", authcontroller.sendResetpassword);
+  app.post("/auth/forgotpassword", authcontroller.sendResetpassword);
   app.post("/auth/setnewpassword", authcontroller.newPassword);
   app.get("/auth/verifyemail", authcontroller.verifyEmail);
 };

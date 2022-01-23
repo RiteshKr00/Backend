@@ -99,7 +99,7 @@ exports.rejectRequest = async (req, res) => {
     console.log(request.deletedCount);
     if (request.deletedCount) {
       res.status(200).send({
-        message: "Friend Request Rejected Updated Succesfully",
+        message: "Friend Request Rejected  Succesfully",
         response: request,
       });
     } else {
@@ -128,7 +128,7 @@ exports.blockUnblockRequest = async (req, res) => {
     });
     console.log(blocked);
     if (blocked.length) {
-      console.log("User is Blocked unblock him");
+      // console.log("User is Blocked unblock him");
       const unblock = await Friend.findOneAndRemove({
         $and: [
           { $or: [{ senderId: req.userId }, { receiverId: receiver }] },

@@ -5,7 +5,7 @@
         "description": "Api Ui for Social App",
         "termsOfService": "http://socialapp/terms/",
         "contact": {
-            "email": "abc@gmail.com"
+            "email": "kumarritesh14062000@gmail.com"
         },
         "license": {
             "name": "MIT",
@@ -31,8 +31,8 @@
             "description": "Operations about user"
         },
         {
-            "name": "userImages",
-            "description": "Operations about user"
+            "name": "Friends",
+            "description": "Operations about friend Request"
         }
     ],
     "paths": {
@@ -138,6 +138,136 @@
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/auth/forgotpassword": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Send Reset Password Link to Email",
+                "description": "Reset Password",
+                "parameters": [],
+                "requestBody": {
+                    "description": "Email of the User",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "kumar@gmail.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password Reset Link Sent"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/auth/setnewpassword": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Set New Password",
+                "description": "Set the New Password",
+                "parameters": [],
+                "requestBody": {
+                    "description": "New Password and token",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "kumar@gmail.com"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "example": "dsfajnkfafn2j43e3"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password Updated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "Try again token/session expired"
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Password Not updated"
+                    }
+                }
+            }
+        },
+        "/auth/verifyemail": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify Email",
+                "description": "Verify the email",
+                "parameters": [],
+                "requestBody": {
+                    "description": "Token sent in mail",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "dsfajnkfafn2j43e3"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email Verified"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "Try again token/session expired"
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Email Not Verified"
                     }
                 }
             }
@@ -254,6 +384,367 @@
                     }
                 }
             }
+        },
+        "/user/profileimg": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Upload User Profile Image",
+                "description": "ProfileImage",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "KeyWord or username to be searched",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "imgType": {
+                                        "type": "string",
+                                        "example": "Profile"
+                                    },
+                                    "imageFile": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile Image uploaded SuccesFully"
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/friend/create": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Send Friend Request to a User",
+                "description": "Create a friend request",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Receiver Id",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "receiver ": {
+                                        "type": "string",
+                                        "example": "61d3f46801433d8e15804c6a",
+                                        "description": "UserId of receiver"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Friend request sent SuccesFully"
+                    },
+                    "400": {
+                        "description": " Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/friend/accept": {
+            "put": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Accept Friend Request to a User",
+                "description": "Accept friend request",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Receiver Id",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "receiver ": {
+                                        "type": "string",
+                                        "example": "61d3f46801433d8e15804c6a",
+                                        "description": "UserId of receiver"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Friend Request Status Updated Succesfully"
+                    },
+                    "400": {
+                        "description": " Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "No such Friend Exist"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/friend/reject": {
+            "delete": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Reject Friend Request to a User",
+                "description": "Reject friend request",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "User Id of user whose request to be rejected",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "receiver ": {
+                                        "type": "string",
+                                        "example": "61d3f46801433d8e15804c6a",
+                                        "description": "UserId of receiver"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Friend Request Rejected Succesfully"
+                    },
+                    "400": {
+                        "description": " Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "No such Friend Exist"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/friend/block": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Block / Unblock a User",
+                "description": "Block /Unblock a friend request",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "User Id of user whose request to be blocked or Unblocked ",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "receiver ": {
+                                        "type": "string",
+                                        "example": "61d3f46801433d8e15804c6a",
+                                        "description": "UserId of user to be blocked or Unblocked"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User Blocked/Unblocked Succesfully"
+                    },
+                    "400": {
+                        "description": " Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "No such Friend Exist"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/friend/list/:status": {
+            "get": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Block / Unblock a User",
+                "description": "Block /Unblock a friend request",
+                "parameters": [
+                    {
+                        "name": "Status",
+                        "in": "path",
+                        "description": "Status of Request to be fetched . Status states:\n  1 : `Requested`\n  2 : `Pending`\n  3 : `Blocked`\n  4 : `Accepted`\n",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                "1",
+                                "2",
+                                "3",
+                                "4"
+                            ],
+                            "description": "Status states:\n  1 : `Requested`\n  2 : `Pending`\n  3 : `Blocked`\n  4 : `Accepted`\n"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User list with Given Status "
+                    },
+                    "400": {
+                        "description": " Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/friend/recommendation": {
+            "get": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Recommends Mutual Friend",
+                "description": "",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ids of Mutual Friends"
+                    },
+                    "400": {
+                        "description": " Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -280,9 +771,15 @@
                         "type": "string",
                         "format": "password"
                     },
+                    "city": {
+                        "type": "string"
+                    },
                     "isVerfified": {
                         "type": "boolean",
                         "default": "false"
+                    },
+                    "pic": {
+                        "type": "string"
                     },
                     "resetToken": {
                         "type": "string"
@@ -311,14 +808,13 @@
                     },
                     "status": {
                         "type": "integer",
-                        "default": "1",
                         "enum": [
                             "1",
                             "2",
                             "3",
                             "4"
                         ],
-                        "description": "Status states:\n  1 : `pending`\n  2 : `Accepted`\n  3 : `Rejected`\n  4 : `blocked`\n"
+                        "description": "Status states:\n  1 : `Requested`\n  2 : `Pending`\n  3 : `Blocked`\n  4 : `Accepted`\n"
                     }
                 },
                 "xml": {

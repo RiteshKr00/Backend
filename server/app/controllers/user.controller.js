@@ -34,11 +34,11 @@ exports.searchUser = async (req, res) => {
 };
 
 exports.uploadProfilePic = async (req, res) => {
-  console.log("first");
   try {
     const files = req.files[0];
     const { path } = files;
     console.log(path);
+    //url to be replaced by env_variable
     const img = await axios.post("http://localhost:8000/user/image/upload", {
       path: path,
     });
