@@ -793,11 +793,95 @@
                     "name": "User"
                 }
             },
+            "Post": {
+                "type": "object",
+                "required": [
+                    "caption"
+                ],
+                "properties": {
+                    "caption": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "pic": {
+                        "type": "string",
+                        "description": "Url of Picture"
+                    },
+                    "likes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "taggedPerson": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "postedBy": {
+                        "type": "string",
+                        "description": "ObjectId"
+                    },
+                    "shared": {
+                        "type": "boolean",
+                        "description": "ObjectId",
+                        "default": "false"
+                    },
+                    "sharedBy": {
+                        "type": "string",
+                        "description": "ObjectId",
+                        "nullable": "true"
+                    },
+                    "visibility": {
+                        "type": "boolean",
+                        "default": "true"
+                    }
+                },
+                "xml": {
+                    "name": "FriendRequests"
+                }
+            },
+            "Comment": {
+                "type": "object",
+                "required": [
+                    "body"
+                ],
+                "properties": {
+                    "postId": {
+                        "type": "string",
+                        "description": "ObjectId"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "commentedBy": {
+                        "type": "string",
+                        "description": "ObjectId"
+                    },
+                    "likes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "parentId": {
+                        "type": "string",
+                        "description": "ObjectId",
+                        "nullable": "true"
+                    }
+                },
+                "xml": {
+                    "name": "FriendRequests"
+                }
+            },
             "FriendRequests": {
                 "type": "object",
                 "required": [
                     "senderId",
-                    "receiverId"
+                    "likes"
                 ],
                 "properties": {
                     "senderId": {
