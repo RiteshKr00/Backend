@@ -35,22 +35,15 @@ exports.searchUser = async (req, res) => {
 
 exports.uploadProfilePic = async (req, res) => {
   try {
+    console.log("first");
     const files = req.files[0];
     const { path } = files;
-    console.log(path);
-    //url to be replaced by env_variable
-    const img = await axios.post("http://localhost:8000/user/image/upload", {
-      path: path,
-    });
-    // .then((res) => {
-    //   console.log(res.data);
-    // })
-    // .catch((err) => console.log(err));
+    const img = await ImageUploadService(path);
     const url = img.data.url;
     const user = await User.findByIdAndUpdate(req.userId, {
       $set: { pic: url },
     });
-
+    console.log("first");
     return res.status(200).send("Profile Image uploaded SuccesFully");
   } catch (err) {
     console.log("err");

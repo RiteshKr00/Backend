@@ -10,6 +10,7 @@ exports.uploadImage = async (req, res) => {
     // const files = req.files[0];
     // const { path } = files;
     // console.log(path); //to upload 1 images
+    console.log("first");
     const path = req.body.path;
     console.log(path );
     const image = await cloudinary.uploader.upload(

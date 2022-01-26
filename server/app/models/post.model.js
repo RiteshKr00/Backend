@@ -7,10 +7,10 @@ const Post = mongoose.model(
       type: String,
       required: true,
     },
-    body: {
-      type: String,
-      //   required: true,
-    },
+    // body: {
+    //   type: String,
+    //   //   required: true,
+    // },
     pic: {
       type: String,
       //   required: true,

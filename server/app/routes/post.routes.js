@@ -1,7 +1,6 @@
+const postcontroller = require("../controllers/post.controller");
 const { authJwt } = require("../middleware");
 const upload = require("../utils/Multer");
-const userImagecontroller = require("../controllers/userImage.controller");
-const { cloudinary } = require("../utils/cloudinary");
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -11,6 +10,10 @@ module.exports = function (app) {
     );
     next();
   });
-  //use middleware in array *
-  app.post("/user/image/upload", userImagecontroller.uploadImage);
+
+  app.post(
+    "/user/post/create",
+    [authJwt.verifyToken, upload.array("image", 1)],
+    postcontroller.createPost
+  );
 };
