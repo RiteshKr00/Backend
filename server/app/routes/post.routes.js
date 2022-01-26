@@ -16,4 +16,16 @@ module.exports = function (app) {
     [authJwt.verifyToken, upload.array("image", 1)],
     postcontroller.createPost
   );
+  app.patch(
+    "/user/post/update",
+    [authJwt.verifyToken],
+    postcontroller.updatePost
+  );
+  app.delete(
+    "/user/post/delete",
+    [authJwt.verifyToken],
+    postcontroller.deletePost
+  );
+
+  app.get("/user/post/:id", [authJwt.verifyToken], postcontroller.getPost);
 };
