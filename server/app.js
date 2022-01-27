@@ -39,11 +39,12 @@ mongoose.connection.on("error", () => {
 app.use(express.json()); //repalcement of bodyparser
 //swagger UI endpoint
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
+require("./app/middleware/HandleResponses")(app); //to handle responses
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/friend.routes")(app);
 require("./app/routes/post.routes")(app);
+require("./app/routes/comment.routes")(app);
 // require("./app/routes/userImage.routes")(app);
 
 app.listen(process.env.PORT || 8000, () => {

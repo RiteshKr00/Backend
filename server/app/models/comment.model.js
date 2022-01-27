@@ -15,12 +15,14 @@ const Comment = mongoose.model(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    likes: {
+      total: {
+        type: Number,
+        default: 0,
+        min: 0,
       },
-    ],
+      by: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    },
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",

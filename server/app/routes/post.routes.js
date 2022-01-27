@@ -26,6 +26,7 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     postcontroller.deletePost
   );
-
+  app.get("/user/post/mine", [authJwt.verifyToken], postcontroller.getAllPost);
+  app.put("/user/post/like", [authJwt.verifyToken], postcontroller.likeunlike);
   app.get("/user/post/:id", [authJwt.verifyToken], postcontroller.getPost);
 };

@@ -1,6 +1,6 @@
 const db = require("../models");
 const ImageUploadService = require("../utils/ImageUploadService");
-const User = db.user;
+const { getPagination } = require("../utils/Pagination");
 const Post = db.post;
 const Comment = db.comment;
 
@@ -32,7 +32,7 @@ exports.createPost = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    res.status(404).send({ message: `No User Found ` });
+    res.status(404).send({ message: `${err} while Creating Post` });
   }
 };
 exports.getPost = async (req, res) => {
@@ -72,5 +72,66 @@ exports.deletePost = async (req, res) => {
     return res.status(200).json({ deletedPost });
   } catch (err) {
     res.status(404).send({ message: `No post Found+${err} ` });
+  }
+};
+exports.getAllPost = async (req, res) => {
+  try {
+    console.log("first");
+    const { page, size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    console.log(limit);
+    const post = await Post.find({ postedBy: req.userId })
+      .skip(offset)
+      .limit(limit)
+      .sort("-createdAt");
+    return res.status(200).json({ post });
+  } catch (err) {
+    res.status(404).send({ message: `No post Found+ ${err}` });
+  }
+};
+// exports.likePost = async (req, res) => {
+//   try {
+//     console.log(req.body.postId);
+//     const post = await Post.findByIdAndUpdate(
+//       req.body.postId,
+//       {
+//         $push: { "likes.by": req.userId }, //to push into an array
+//         $inc: { "likes.total": 1 },
+//       },
+//       {
+//         new: true, //to get updated record
+//       }
+//     );
+//     console.log(post);
+//     return res.status(200).json({ post });
+//   } catch (err) {
+//     res.status(404).send({ message: ` ${err}` });
+//   }
+// };
+exports.likeunlike = async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const post = await Post.findOne({ postId });
+    if (!post) {
+      res.status(400).json({ error: "Post not found!" });
+    } else {
+      const liked = post.likes.by.includes(req.userId);
+      const count = liked ? post.likes.by.length - 1 : post.likes.by.length + 1;
+      console.log(count);
+      const option = liked ? "$pull" : "$addToSet"; //The $addToSet operator adds a value to an array unless the value is already present
+      await Post.updateOne(
+        { postId },
+        {
+          [option]: {
+            "likes.by": req.userId,
+          },
+          $set: { "likes.total": count },
+        }
+      );
+      const msg = liked ? "unliked" : "liked";
+      return res.status(200).json({ message: `Post ${msg}!` });
+    }
+  } catch (err) {
+    res.status(404).send({ message: ` ${err}` });
   }
 };
