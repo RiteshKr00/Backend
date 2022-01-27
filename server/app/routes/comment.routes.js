@@ -10,6 +10,31 @@ module.exports = function (app) {
     next();
   });
 
+  app.put(
+    "/user/post/updatecomment/:commentId",
+    [authJwt.verifyToken],
+    commentcontroller.updateComment
+  );
+  app.post(
+    "/user/post/comment/likeunlike",
+    [authJwt.verifyToken],
+    commentcontroller.likeunlikeComment
+  );
+  app.get(
+    "/user/post/comment/:postId",
+    [authJwt.verifyToken],
+    commentcontroller.getAllComments
+  );
+  app.get(
+    "/user/post/reply/:parentId",
+    [authJwt.verifyToken],
+    commentcontroller.getAllReplies
+  );
+  app.delete(
+    "/user/post/comment/delete/:commentId",
+    [authJwt.verifyToken],
+    commentcontroller.deleteComment
+  );
   app.post(
     "/user/post/comment/:postId",
     [authJwt.verifyToken],
@@ -18,6 +43,6 @@ module.exports = function (app) {
   app.post(
     "/user/post/reply/:postId",
     [authJwt.verifyToken],
-    commentcontroller.createComment
+    commentcontroller.createReply
   );
 };

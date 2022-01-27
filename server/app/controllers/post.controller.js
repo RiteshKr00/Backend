@@ -2,7 +2,7 @@ const db = require("../models");
 const ImageUploadService = require("../utils/ImageUploadService");
 const { getPagination } = require("../utils/Pagination");
 const Post = db.post;
-const Comment = db.comment;
+const Friend = db.friend;
 
 exports.createPost = async (req, res) => {
   try {
@@ -48,7 +48,7 @@ exports.updatePost = async (req, res) => {
     const { postId, caption, taggedPerson } = req.body;
     const tPerson = taggedPerson.split(",");
     console.log(tPerson);
-
+    //check first if user created the Post or handle it in frontend
     const upadtefield = { caption: caption, taggedperson: tPerson };
     const post = await Post.findOneAndUpdate(
       { _id: req.body.postId },
@@ -69,6 +69,7 @@ exports.deletePost = async (req, res) => {
     const deletedPost = await Post.findOneAndDelete({
       $and: [{ postedBy: req.userId }, { _id: postId }],
     });
+    //also delete all Comments of this post
     return res.status(200).json({ deletedPost });
   } catch (err) {
     res.status(404).send({ message: `No post Found+${err} ` });
@@ -76,7 +77,6 @@ exports.deletePost = async (req, res) => {
 };
 exports.getAllPost = async (req, res) => {
   try {
-    console.log("first");
     const { page, size } = req.query;
     const { limit, offset } = getPagination(page, size);
     console.log(limit);
@@ -89,25 +89,35 @@ exports.getAllPost = async (req, res) => {
     res.status(404).send({ message: `No post Found+ ${err}` });
   }
 };
-// exports.likePost = async (req, res) => {
-//   try {
-//     console.log(req.body.postId);
-//     const post = await Post.findByIdAndUpdate(
-//       req.body.postId,
-//       {
-//         $push: { "likes.by": req.userId }, //to push into an array
-//         $inc: { "likes.total": 1 },
-//       },
-//       {
-//         new: true, //to get updated record
-//       }
-//     );
-//     console.log(post);
-//     return res.status(200).json({ post });
-//   } catch (err) {
-//     res.status(404).send({ message: ` ${err}` });
-//   }
-// };
+exports.getFeed = async (req, res) => {
+  try {
+    const { page, size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    const acceptedUser = await Friend.find({
+      $and: [
+        { $or: [{ senderId: req.userId }, { receiverId: req.userId }] },
+        { status: 4 },
+      ],
+    }).select("receiverId -_id");
+    const UserFriendId = acceptedUser.map((friend) => {
+      // console.log(friend.receiverId);
+      return friend.receiverId;
+    });
+    console.log(UserFriendId);
+    const posts = await Post.find({
+      postedBy: { $in: UserFriendId },
+    })
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      // .populate("postedBy");
+    if (!posts || posts.length == 0) return res.error(400, "No post found!");
+
+    return res.success("Success", posts);
+  } catch (err) {
+    res.status(404).send({ message: `No post Found+ ${err}` });
+  }
+};
 exports.likeunlike = async (req, res) => {
   try {
     const { postId } = req.body;
