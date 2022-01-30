@@ -2,9 +2,12 @@ const db = require("../models");
 const User = db.user;
 const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
-const SendEmails = require("../utils/SendEmails");
+const {
+  resetPassword,
+  sendVerificationMail,
+} = require("../utils/Emailprovider");
 const RandomToken = require("../utils/RandomToken");
-const { ResetPassword, Verification } = require("../utils/EmailTemplate");
+const { default: axios } = require("axios");
 const JWT = process.env.JWT_SEC;
 
 exports.signup = async (req, res) => {
@@ -20,14 +23,13 @@ exports.signup = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: await bcrypt.hash(req.body.password, 8),
-      city:req.body.city,
+      city: req.body.city,
       resetToken: token,
       expireToken: Date.now() + 3600000 * 24 * 15, //15 days,
     });
     await user.save();
-    const message = Verification(req.body.email, token);
-    console.log(message);
-    // SendEmails(message);
+    sendVerificationMail(req.body.email, token);
+
     res
       .status(200)
       .send({ message: "User was registered successfully! Verify Email" });

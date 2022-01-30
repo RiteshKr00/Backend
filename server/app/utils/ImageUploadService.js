@@ -1,7 +1,9 @@
 const { default: axios } = require("axios");
+const photo_Upload_Url = process.env.photoupload_url;
+
 module.exports = uploadImage = (path) => {
-  //url to be replaced by env_variable
-  const img = axios.post("http://localhost:8000/user/image/upload", {
+  
+  const img = axios.post(photo_Upload_Url, {
     path: path,
   });
   // .then((res) => {
