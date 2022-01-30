@@ -30,3 +30,6 @@ CLOUDINARY_API_SECRET="q**********r******i"
 ```
  base_URL/api-docs/
 ```
+## Screenshot
+![This is an image](/server/public/uploads/ApiDocs.png)
+
