@@ -3,10 +3,14 @@ const ImageUploadService = require("../utils/ImageUploadService");
 const { getPagination } = require("../utils/Pagination");
 const Post = db.post;
 const Comment = db.comment;
+const Notification = db.notification;
+
 exports.createComment = async (req, res) => {
   try {
     const { body } = req.body;
     const postId = req.params.postId;
+    const post = await Post.findById( postId );
+
     if (!body || !body.trim()) {
       return res
         .status(400)
@@ -16,6 +20,13 @@ exports.createComment = async (req, res) => {
       postId: postId,
       body: body,
       commentedBy: req.userId,
+    }).save();
+    //send notification "user Commented On your Post"
+    const notification = await new Notification({
+      senderid: req.userId,
+      receiverid: post.postedBy,
+      event: 3,
+      postid: postId,
     }).save();
 
     return res.status(200).json({ message: "Comment Created" });
@@ -77,6 +88,15 @@ exports.likeunlikeComment = async (req, res) => {
         : comment.likes.by.length + 1;
       console.log(count);
       const option = liked ? "$pull" : "$addToSet"; //The $addToSet operator adds a value to an array unless the value is already present
+      if (!liked) {
+        //send like mail here
+        const notification = await new Notification({
+          senderid: req.userId,
+          receiverid: comment.commentedBy,
+          event: 2,
+          commentid: comment._id,
+        }).save();
+      }
       const likedcomment = await Comment.updateOne(
         { commentId },
         {

@@ -33,6 +33,14 @@
         {
             "name": "Friends",
             "description": "Operations about friend Request"
+        },
+        {
+            "name": "Post",
+            "description": "Operations about User Posts"
+        },
+        {
+            "name": "Comment",
+            "description": "Operations about Comment on User Posts"
         }
     ],
     "paths": {
@@ -899,6 +907,47 @@
                             "4"
                         ],
                         "description": "Status states:\n  1 : `Requested`\n  2 : `Pending`\n  3 : `Blocked`\n  4 : `Accepted`\n"
+                    }
+                },
+                "xml": {
+                    "name": "FriendRequests"
+                }
+            },
+            "Notification": {
+                "type": "object",
+                "required": [
+                    "senderId",
+                    "receiverId"
+                ],
+                "properties": {
+                    "senderId": {
+                        "type": "string"
+                    },
+                    "receiverId": {
+                        "type": "string"
+                    },
+                    "event": {
+                        "type": "integer",
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5"
+                        ],
+                        "description": "Event:\n  1 : `Liked Post`\n  2 : `Liked Comment`\n  3 : `Commented on Post `\n  4 : `Sent Friend Request`\n  4 : `Accepted Friend Request`\n"
+                    },
+                    "postid": {
+                        "type": "string",
+                        "description": "ObjectId"
+                    },
+                    "commentid": {
+                        "type": "string",
+                        "description": "ObjectId"
+                    },
+                    "seen": {
+                        "type": "boolean",
+                        "default": "false"
                     }
                 },
                 "xml": {

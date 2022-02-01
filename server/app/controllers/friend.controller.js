@@ -1,6 +1,7 @@
 const db = require("../models");
 const Friend = db.friend;
 const User = db.user;
+const Notification = db.notification;
 
 exports.createFriend = async (req, res) => {
   try {
@@ -41,7 +42,12 @@ exports.createFriend = async (req, res) => {
       status: 1, //Requested
     });
     await friendRequest2.save();
-
+    //send notification of "sent a friend request"
+    const notification = await new Notification({
+      senderid: req.userId,
+      receiverid: receiver,
+      event: 4,
+    }).save();
     res.status(200).send({ message: "Friend Request Sent Succesfully" });
   } catch (err) {
     res.status(500).send({ message: `Something Went Wrong ${err} ` });
@@ -51,6 +57,7 @@ exports.acceptRequest = async (req, res) => {
   try {
     console.log(req.userId);
     //here status can be  // 1: "Requested" 2: "Pending" 3: "Blocked"  4: "Accepted"
+    //Here *receiver is the user who sent request
     const { receiver } = req.body;
     console.log(receiver);
     const request = await Friend.updateMany(
@@ -68,6 +75,13 @@ exports.acceptRequest = async (req, res) => {
 
     console.log(request.matchedCount);
     if (request.matchedCount) {
+      //send notification of "User Accepted Request"
+      const notification = await new Notification({
+        senderid: req.userId,
+        receiverid: receiver,
+        event: 5,
+      }).save();
+      
       res.status(200).send({
         message: "Friend Request Status Updated Succesfully",
         response: request,
@@ -86,7 +100,7 @@ exports.rejectRequest = async (req, res) => {
   try {
     console.log(req.userId);
     //here status can be  // 1: "Requested" 2: "Pending" 3: "Blocked"  4: "Accepted"
-
+    //Here *receiver is the user who sent request
     const { receiver } = req.body;
     console.log(receiver);
     const request = await Friend.deleteMany({
@@ -116,7 +130,7 @@ exports.blockUnblockRequest = async (req, res) => {
   try {
     console.log(req.userId);
     //here status can be  // 1: "Requested" 2: "Pending" 3: "Blocked"  4: "Accepted"
-
+    //Here *receiver is the user who sent request
     const { receiver } = req.body;
     console.log(receiver);
     //check if already Blocked
@@ -167,7 +181,7 @@ exports.updateRequestStatus = async (req, res) => {
   try {
     console.log(req.userId);
     //here status can be  // 1: "Requested" 2: "Pending" 3: "Blocked"  4: "Accepted"
-
+    //Here *receiver is the user who sent request
     const { status, receiver } = req.body;
     console.log(status, receiver);
     const request = await Friend.findOneAndUpdate(
@@ -297,7 +311,7 @@ exports.recommendFriend = async (req, res) => {
     console.log(req.userId);
     const { city } = req.body;
     //on basis of city
-    
+
     // const friendSuggestion = await User.find({
     //   $and: [{ city: city }, { _id: { $nin: req.userId } }],
     // });

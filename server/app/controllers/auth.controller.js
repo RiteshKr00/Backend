@@ -29,7 +29,6 @@ exports.signup = async (req, res) => {
     });
     await user.save();
     sendVerificationMail(req.body.email, token);
-
     res
       .status(200)
       .send({ message: "User was registered successfully! Verify Email" });
@@ -89,9 +88,7 @@ exports.sendResetpassword = async (req, res) => {
         .status(422)
         .json({ error: "User dont exists with that email" });
     }
-    const message = ResetPassword(req.body.email, token);
-    console.log(message);
-    SendEmails(message);
+    resetPassword(req.body.email, token);
     res.send("Password Reset Link Sent");
   } catch (err) {
     res.status(500).send({ message: `Email Not Sent ${err} ` });

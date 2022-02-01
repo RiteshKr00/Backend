@@ -1,8 +1,11 @@
+const { post } = require("../models");
 const db = require("../models");
+const { notificationMail } = require("../utils/Emailprovider");
 const ImageUploadService = require("../utils/ImageUploadService");
 const { getPagination } = require("../utils/Pagination");
 const Post = db.post;
 const Friend = db.friend;
+const Notification = db.notification;
 
 exports.createPost = async (req, res) => {
   try {
@@ -109,8 +112,8 @@ exports.getFeed = async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .skip(offset)
-      .limit(limit)
-      // .populate("postedBy");
+      .limit(limit);
+    // .populate("postedBy");
     if (!posts || posts.length == 0) return res.error(400, "No post found!");
 
     return res.success("Success", posts);
@@ -122,13 +125,25 @@ exports.likeunlike = async (req, res) => {
   try {
     const { postId } = req.body;
     const post = await Post.findOne({ postId });
+    console.log(post);
     if (!post) {
       res.status(400).json({ error: "Post not found!" });
     } else {
       const liked = post.likes.by.includes(req.userId);
       const count = liked ? post.likes.by.length - 1 : post.likes.by.length + 1;
-      console.log(count);
+      // console.log(count);
       const option = liked ? "$pull" : "$addToSet"; //The $addToSet operator adds a value to an array unless the value is already present
+      if (!liked) {
+        //send like mail here
+        const notification = await new Notification({
+          senderid: req.userId,
+          receiverid: post.postedBy,
+          event: 1,
+          postid: post._id,
+        }).save();
+        await notificationMail(notification._id);
+        console.log(notification);
+      }
       await Post.updateOne(
         { postId },
         {
