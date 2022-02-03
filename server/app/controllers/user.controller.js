@@ -50,3 +50,37 @@ exports.uploadProfilePic = async (req, res) => {
     res.status(404).send(err);
   }
 };
+exports.changeStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    const newstatus = user.status == "public" ? "private" : "public";
+    const updated = await User.findByIdAndUpdate(
+      req.userId,
+      {
+        status: newstatus,
+      },
+      { new: true }
+    );
+    return res.success("Status Changed Succesfully", updated);
+  } catch (err) {
+    console.log("err");
+    res.status(404).send(err);
+  }
+};
+exports.friendVisibility = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    const newstatus = user.friendvisibility ? false : true;
+    const updated = await User.findByIdAndUpdate(
+      req.userId,
+      {
+        friendvisibility: newstatus,
+      },
+      { new: true }
+    );
+    return res.success("Status Changed Succesfully", updated);
+  } catch (err) {
+    console.log("err");
+    res.status(404).send(err);
+  }
+};

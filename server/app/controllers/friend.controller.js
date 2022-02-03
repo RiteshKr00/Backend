@@ -81,7 +81,7 @@ exports.acceptRequest = async (req, res) => {
         receiverid: receiver,
         event: 5,
       }).save();
-      
+
       res.status(200).send({
         message: "Friend Request Status Updated Succesfully",
         response: request,
@@ -362,6 +362,33 @@ exports.recommendFriend = async (req, res) => {
     res
       .status(200)
       .send({ message1: "Ids of Mutual Friends  ", response: recommended });
+  } catch (err) {
+    res.status(500).send({ message: `Something Went Wrong ${err} ` });
+  }
+};
+
+exports.getOtherUserFriendList = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    const visibility = user.friendvisibility;
+    if (visibility) {
+      const list = await Friend.find({
+        $and: [
+          { $or: [{ senderId: userId }, { receiverId: userId }] },
+          { status: 4 },
+          {
+            $and: [
+              { senderId: { $ne: req.userId } },
+              { receiverId: { $ne: req.userId } },
+            ],
+          },
+        ],
+      });
+      return res.success("List of user Friend fetched", list);
+    } else {
+      res.success("User has Hidden their friends");
+    }
   } catch (err) {
     res.status(500).send({ message: `Something Went Wrong ${err} ` });
   }

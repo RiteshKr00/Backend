@@ -1,5 +1,6 @@
 const { post } = require("../models");
 const db = require("../models");
+const User = require("../models/user.model");
 const { notificationMail } = require("../utils/Emailprovider");
 const ImageUploadService = require("../utils/ImageUploadService");
 const { getPagination } = require("../utils/Pagination");
@@ -46,6 +47,46 @@ exports.getPost = async (req, res) => {
     res.status(404).send({ message: `No post Found ` });
   }
 };
+//to get other user post
+exports.getUserPost = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    const { page, size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    console.log(limit);
+    console.log(user.status);
+    if (user.status === "public") {
+      const post = await Post.find({ postedBy: user._id })
+        .skip(offset)
+        .limit(limit)
+        .sort("-createdAt");
+      return res.status(200).json({ post });
+    } else if (user.status === "private") {
+      //check if user is a friend of requester
+      console.log("here");
+      const isFriend = await Friend.findOne({
+        $and: [
+          { $or: [{ senderId: req.userId }, { receiverId: req.userId }] },
+          { $or: [{ senderId: user._id }, { receiverId: user._id }] },
+          { status: 4 },
+        ],
+      });
+      console.log(isFriend);
+      if (isFriend) {
+        const post = await Post.find({ postedBy: user._id })
+          .skip(offset)
+          .limit(limit)
+          .sort("-createdAt");
+        return res.status(200).json({ post });
+      } else {
+        return res.status(200).json({ message: "User has private status" });
+      }
+    }
+  } catch (err) {
+    res.status(500).send({ message: `Something went wrong+${err} ` });
+  }
+};
 exports.updatePost = async (req, res) => {
   try {
     const { postId, caption, taggedPerson } = req.body;
@@ -61,7 +102,7 @@ exports.updatePost = async (req, res) => {
     console.log(post);
     return res.status(200).json({ post });
   } catch (err) {
-    res.status(404).send({ message: `Error while Uploading + ${err} ` });
+    res.status(404).send({ message: `Error while Updating + ${err} ` });
   }
 };
 
@@ -158,5 +199,37 @@ exports.likeunlike = async (req, res) => {
     }
   } catch (err) {
     res.status(404).send({ message: ` ${err}` });
+  }
+};
+exports.changeVisibilityAll = async (req, res) => {
+  try {
+    const { visible } = req.query;
+    console.log(typeof visible);
+    if (visible === "private") {
+      console.log("first");
+    } else {
+      console.log("second");
+    }
+
+    return res.success(`Success`);
+  } catch (err) {
+    res.error(300, `${err}`, `Something Went Wrong`);
+  }
+};
+exports.changeVisibility = async (req, res) => {
+  try {
+    const parentId = req.params.parentId;
+    const { page, size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    const comment = await Comment.find({ parentId: parentId })
+      .skip(offset)
+      .limit(limit)
+      .sort("-createdAt");
+    //   .populate("postId")
+    //   .populate("commentedBy");
+    //   .populate("likes");
+    return res.success(`Success`, comment);
+  } catch (err) {
+    res.error(300, `${err}`, `Something Went Wrong`);
   }
 };

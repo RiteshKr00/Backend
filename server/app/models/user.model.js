@@ -29,6 +29,11 @@ const User = mongoose.model(
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "UserImage",
     // }
+    status: { type: String, default: "public", enum: ["public", "private"] },
+    friendvisibility: {
+      type: Boolean,
+      default: true,
+    },
     resetToken: String,
     expireToken: Date,
   })

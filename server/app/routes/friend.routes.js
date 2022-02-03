@@ -36,6 +36,11 @@ module.exports = function (app) {
     friendcontroller.blockUnblockRequest
   );
   app.get(
+    "/user/friend/allfriend/:userId",
+    [authJwt.verifyToken],
+    friendcontroller.getOtherUserFriendList
+  );
+  app.get(
     "/user/friend/list/:status",
     [authJwt.verifyToken],
     friendcontroller.getFriendRequestList

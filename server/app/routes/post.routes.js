@@ -26,8 +26,18 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     postcontroller.deletePost
   );
+  app.put(
+    "/user/post/visibility",
+    [authJwt.verifyToken],
+    postcontroller.changeVisibilityAll
+  );
   app.get("/user/post/mine", [authJwt.verifyToken], postcontroller.getAllPost);
   app.get("/user/post/feed", [authJwt.verifyToken], postcontroller.getFeed);
   app.put("/user/post/like", [authJwt.verifyToken], postcontroller.likeunlike);
+  app.get(
+    "/user/post/other",
+    [authJwt.verifyToken],
+    postcontroller.getUserPost
+  );
   app.get("/user/post/:id", [authJwt.verifyToken], postcontroller.getPost);
 };
