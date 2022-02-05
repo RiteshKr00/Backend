@@ -64,7 +64,7 @@
                 "tags": [
                     "Ping"
                 ],
-                "summary": "Get Most Liked Post",
+                "summary": "Check Connection",
                 "description": "",
                 "parameters": [],
                 "responses": {
