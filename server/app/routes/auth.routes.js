@@ -12,9 +12,10 @@ module.exports = function (app) {
     next();
   });
 
-  app.get("/ping", (req, res) => {
+  app.get("/ping", async (req, res) => {
     // res.send({ message: "connected" });
     try {
+      // const tags = await Tags.updateMany({});
       res.success("connected");
     } catch (error) {
       res.error(error, 500, "message", "result");

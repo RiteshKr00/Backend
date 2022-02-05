@@ -12,7 +12,7 @@ const Notification = mongoose.model(
       },
       //id of post Liked or commented
       postid: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
-      //id of comment which is replied
+      //id of comment which is Liked
       commentid: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
       seen: {
         type: Boolean,

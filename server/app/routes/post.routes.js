@@ -39,5 +39,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     postcontroller.getUserPost
   );
+  app.get(
+    "/user/post/extended",
+    [authJwt.verifyToken],
+    postcontroller.getExtendedPostWithTags
+  );
   app.get("/user/post/:id", [authJwt.verifyToken], postcontroller.getPost);
 };

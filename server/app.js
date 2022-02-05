@@ -41,14 +41,21 @@ app.use(express.json()); //repalcement of bodyparser
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 require("./app/middleware/HandleResponses")(app); //to handle responses
 require("./app/routes/auth.routes")(app);
+require("./app/routes/analytics.routes")(app);
 require("./app/routes/notification.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/friend.routes")(app);
 require("./app/routes/post.routes")(app);
 require("./app/routes/comment.routes")(app);
-// require("./app/routes/notification.routes")(app);
 // require("./app/routes/userImage.routes")(app);
 
+//Catch all route handler
+app.get("*", (req, res) => {
+  return res.status(404).send({
+    message: "Check Documentation ",
+    link: "https://social-media-app1-backend.herokuapp.com/api-docs/",
+  });
+});
 app.listen(process.env.PORT || 8000, () => {
   console.log("Server is runnng at port", process.env.PORT);
 });

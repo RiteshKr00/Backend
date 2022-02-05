@@ -24,10 +24,21 @@ const Post = mongoose.model(
         },
         by: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       },
+      likeanalytics: [
+        {
+          userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          at: { type: Date, default: Date.now() },
+        },
+      ],
       taggedperson: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
+        },
+      ],
+      tags: [
+        {
+          type: String,
         },
       ],
       postedBy: {

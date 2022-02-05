@@ -25,6 +25,16 @@ const User = mongoose.model(
     pic: {
       type: String,
     },
+    receivenotification: {
+      email: {
+        type: Boolean,
+        default: true,
+      },
+      dashboard: {
+        type: Boolean,
+        default: true,
+      },
+    },
     // pic: { //IF we want to link to Schema
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "UserImage",

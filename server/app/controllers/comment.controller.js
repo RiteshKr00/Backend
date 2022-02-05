@@ -1,6 +1,7 @@
 const db = require("../models");
 const ImageUploadService = require("../utils/ImageUploadService");
 const { getPagination } = require("../utils/Pagination");
+const { notificationMail } = require("../utils/Emailprovider");
 const Post = db.post;
 const Comment = db.comment;
 const Notification = db.notification;
@@ -9,7 +10,8 @@ exports.createComment = async (req, res) => {
   try {
     const { body } = req.body;
     const postId = req.params.postId;
-    const post = await Post.findById( postId );
+    const post = await Post.findById(postId).populate("postedBy");
+    const notification = post.postedBy.receivenotification;
 
     if (!body || !body.trim()) {
       return res
@@ -22,12 +24,17 @@ exports.createComment = async (req, res) => {
       commentedBy: req.userId,
     }).save();
     //send notification "user Commented On your Post"
-    const notification = await new Notification({
-      senderid: req.userId,
-      receiverid: post.postedBy,
-      event: 3,
-      postid: postId,
-    }).save();
+    if (notification.dashboard) {
+      const notify = await new Notification({
+        senderid: req.userId,
+        receiverid: post.postedBy,
+        event: 3,
+        postid: postId,
+      }).save();
+
+      if (notification.email) await notificationMail(notify._id);
+      console.log(notify);
+    }
 
     return res.status(200).json({ message: "Comment Created" });
   } catch (err) {
@@ -78,7 +85,12 @@ exports.updateComment = async (req, res) => {
 exports.likeunlikeComment = async (req, res) => {
   try {
     const { commentId } = req.body;
-    const comment = await Comment.findOne({ commentId });
+    const comment = await Comment.findOne({ commentId }).populate(
+      "commentedBy"
+    );
+    console.log(comment);
+    const notification = comment.commentedBy.receivenotification;
+
     if (!comment) {
       res.status(400).json({ error: "comment not found!" });
     } else {
@@ -90,12 +102,17 @@ exports.likeunlikeComment = async (req, res) => {
       const option = liked ? "$pull" : "$addToSet"; //The $addToSet operator adds a value to an array unless the value is already present
       if (!liked) {
         //send like mail here
-        const notification = await new Notification({
-          senderid: req.userId,
-          receiverid: comment.commentedBy,
-          event: 2,
-          commentid: comment._id,
-        }).save();
+        if (notification.dashboard) {
+          const notify = await new Notification({
+            senderid: req.userId,
+            receiverid: comment.commentedBy,
+            event: 2,
+            commentid: comment._id,
+          }).save();
+
+          // if (notification.email) await notificationMail(notify._id);
+          console.log(notify);
+        }
       }
       const likedcomment = await Comment.updateOne(
         { commentId },

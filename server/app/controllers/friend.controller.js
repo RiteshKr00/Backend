@@ -1,4 +1,6 @@
 const db = require("../models");
+const { findById } = require("../models/user.model");
+const { notificationMail } = require("../utils/Emailprovider");
 const Friend = db.friend;
 const User = db.user;
 const Notification = db.notification;
@@ -42,12 +44,19 @@ exports.createFriend = async (req, res) => {
       status: 1, //Requested
     });
     await friendRequest2.save();
+    const receivingUser = await findById(receiver);
     //send notification of "sent a friend request"
-    const notification = await new Notification({
-      senderid: req.userId,
-      receiverid: receiver,
-      event: 4,
-    }).save();
+    const notification = receivingUser.receivenotification;
+    if (notification.dashboard) {
+      const notify = await new Notification({
+        senderid: req.userId,
+        receiverid: receiver,
+        event: 4,
+      }).save();
+
+      if (notification.email) await notificationMail(notify._id);
+      console.log(notify);
+    }
     res.status(200).send({ message: "Friend Request Sent Succesfully" });
   } catch (err) {
     res.status(500).send({ message: `Something Went Wrong ${err} ` });
@@ -75,12 +84,19 @@ exports.acceptRequest = async (req, res) => {
 
     console.log(request.matchedCount);
     if (request.matchedCount) {
+      const receivingUser = await findById(receiver);
       //send notification of "User Accepted Request"
-      const notification = await new Notification({
-        senderid: req.userId,
-        receiverid: receiver,
-        event: 5,
-      }).save();
+      const notification = receivingUser.receivenotification;
+      if (notification.dashboard) {
+        const notify = await new Notification({
+          senderid: req.userId,
+          receiverid: receiver,
+          event: 5,
+        }).save();
+
+        if (notification.email) await notificationMail(notify._id);
+        console.log(notify);
+      }
 
       res.status(200).send({
         message: "Friend Request Status Updated Succesfully",

@@ -15,6 +15,9 @@
     },
     "servers": [
         {
+            "url": "https://social-media-app1-backend.herokuapp.com/"
+        },
+        {
             "url": "http://localhost:8080/"
         },
         {
@@ -22,6 +25,10 @@
         }
     ],
     "tags": [
+        {
+            "name": "Ping",
+            "description": "Check Connection"
+        },
         {
             "name": "Authentication",
             "description": "User authentication"
@@ -41,9 +48,35 @@
         {
             "name": "Comment",
             "description": "Operations about Comment on User Posts"
+        },
+        {
+            "name": "Notification",
+            "description": "Operations about Notification"
+        },
+        {
+            "name": "Analytics",
+            "description": "Operations about Post Analytics"
         }
     ],
     "paths": {
+        "/ping": {
+            "get": {
+                "tags": [
+                    "Ping"
+                ],
+                "summary": "Get Most Liked Post",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Connected"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/auth/signin": {
             "post": {
                 "tags": [
@@ -76,8 +109,12 @@
                 "responses": {
                     "200": {
                         "description": "Signed in Successfully",
-                        "schema": {
-                            "$ref": "#/components/schemas/User"
+                        "content": {
+                            " application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
                         }
                     },
                     "400": {
@@ -753,6 +790,597 @@
                     }
                 }
             }
+        },
+        "/user/post/create": {
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Create Post",
+                "description": "Create a post",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Details of Post to be created",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "caption": {
+                                        "type": "string",
+                                        "example": "Nice morning"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "love,goodvibes"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Select Image for Post  otherwise leave empty"
+                                    },
+                                    "taggedPerson": {
+                                        "type": "string",
+                                        "example": "ObjectId,ObjectId,61fe7fa426d710ddf9bf6fea"
+                                    },
+                                    "originalAuthor": {
+                                        "type": "string",
+                                        "example": "61fe7fa426d710ddf9bf6fea",
+                                        "description": "UserId of Author if Post is Shared otherwise leave empty"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post Created SuccesFully",
+                        "content": {
+                            " application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/update": {
+            "patch": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Update Post",
+                "description": "Update a post",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Details of Post to be updated",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "postId": {
+                                        "type": "string",
+                                        "example": "61fe7fa426d710ddf9bf6fea",
+                                        "description": "Id of post to be Updated"
+                                    },
+                                    "caption": {
+                                        "type": "string",
+                                        "example": "Nice morning"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "love,goodvibes"
+                                    },
+                                    "taggedPerson": {
+                                        "type": "string",
+                                        "example": "ObjectId,ObjectId,61fe7fa426d710ddf9bf6fea"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post Updated SuccesFully",
+                        "content": {
+                            " application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/delete": {
+            "delete": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Delete Post",
+                "description": "Delete a post",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Id of Post to be deleted",
+                    "required": true,
+                    "content": {
+                        " application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "postId": {
+                                        "type": "string",
+                                        "example": "61fe7fa426d710ddf9bf6fea",
+                                        "description": "Id of post to be Deleted"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post Deleted SuccesFully"
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/mine": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Fetch all the Post of Logged in User",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The Page number of the result set to collect"
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The numbers of items to return"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Post Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/feed": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get Posts for the Feed",
+                "description": "Fetch all the latest post of friends",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The Page number of the result set to collect"
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The numbers of items to return"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Posts Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/other": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get all Post of a user of given Id",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The Page number of the result set to collect"
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The numbers of items to return"
+                    }
+                ],
+                "requestBody": {
+                    "description": "UserId whose Post to be Fetched",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userId": {
+                                        "type": "string",
+                                        "example": "61fe7fa426d710ddf9bf6fea"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/extended": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get Post suggestion based on the tags of most liked/created Post",
+                "description": "KeyWord or username to be searched is matched with name and email of the user",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-access-token",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The Page number of the result set to collect"
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The numbers of items to return"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Post Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID / Bad Request"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "404": {
+                        "description": "User Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/post/:id": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get A Post by PostId",
+                "description": ""
+            }
+        },
+        "/user/post/like": {
+            "put": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Like Unlike a Post",
+                "description": ""
+            }
+        },
+        "/user/post/comment/:postId": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Create Comment",
+                "description": ""
+            }
+        },
+        "/user/post/reply/:postId": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "create Reply",
+                "description": ""
+            }
+        },
+        "/user/post/comment/likeunlike": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Like Unlike a Comment",
+                "description": ""
+            }
+        },
+        "/user/post/comment/delete/:commentId": {
+            "delete": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Delete a Comment",
+                "description": ""
+            }
+        },
+        "/user/post/updatecomment/:commentId": {
+            "put": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Update a Comment",
+                "description": ""
+            }
+        },
+        "/user/post/reply/:parentId": {
+            "get": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Reply to a Comment",
+                "description": ""
+            }
+        },
+        "/user/post/comment/": {
+            "get": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Get all Comment",
+                "description": ""
+            }
+        },
+        "/user/notification": {
+            "get": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Get all Notification",
+                "description": ""
+            }
+        },
+        "/user/notification/read": {
+            "put": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Mark as read all Notification",
+                "description": ""
+            }
+        },
+        "/user/notification/read/:notificationid": {
+            "put": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Mark as read a Notification",
+                "description": ""
+            }
+        },
+        "/user/notification/:id": {
+            "get": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Get Details of Notification By Id",
+                "description": ""
+            }
+        },
+        "/user/post/engagement": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Get Account Engagement rate",
+                "description": ""
+            }
+        },
+        "/user/post/mostliked": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Get Most Liked Post",
+                "description": ""
+            }
         }
     },
     "components": {
@@ -911,6 +1539,25 @@
                 },
                 "xml": {
                     "name": "FriendRequests"
+                }
+            },
+            "Tags": {
+                "type": "object",
+                "properties": {
+                    "tag": {
+                        "type": "string"
+                    },
+                    "Number": {
+                        "type": "Number",
+                        "default": "0"
+                    },
+                    "userid": {
+                        "type": "string",
+                        "description": "ObjectId"
+                    }
+                },
+                "xml": {
+                    "name": "Tags"
                 }
             },
             "Notification": {
